@@ -1,7 +1,7 @@
 redux-orm-proptypes
 ===============
 
-Provides type checking using React PropTypes and declaring default properties with defaultProps in `redux-orm`. 
+Provides type checking using React PropTypes and declaring default properties with defaultProps in [Redux-ORM](https://github.com/tommikaikkonen/redux-orm). 
 
 ## Installation
 
