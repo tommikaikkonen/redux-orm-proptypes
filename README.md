@@ -25,15 +25,7 @@ Use the mixin function which returns a class with PropTypes and defaultProps log
 const ValidatingModel = propTypesMixin(Model);
 ```
 
-If `process.env.NODE_ENV === 'production'`, the PropTypes checking will be disabled. You can explicitly toggle either of the features by importing the mixin factory, and creating your own version of the mixin by passing an options object.
-
-```javascript
-import { Model } from 'redux-orm';
-import { getPropTypesMixin } from 'redux-orm-proptypes';
-
-const myPropTypesMixin = getPropTypesMixin({ validate: false, useDefaults: true});
-const ValidatingModel = myPropTypesMixin(Model);
-```
+If `process.env.NODE_ENV === 'production'`, PropTypes checking will be disabled.
 
 Define your concrete model, and add `propTypes` and `defaultProps` static class attributes.
 
@@ -68,6 +60,18 @@ console.log(instance.isFetching);
 
 instance.update({ age: `I don't know!` });
 // Error: Invalid prop `age` of type `string` supplied to `Person.update`, expected `number`.
+```
+
+## Options
+
+You can explicitly toggle either of the features by importing the mixin factory function `getPropTypesMixin` and creating your own version of the mixin by passing an options object.
+
+```javascript
+import { Model } from 'redux-orm';
+import { getPropTypesMixin } from 'redux-orm-proptypes';
+
+const myPropTypesMixin = getPropTypesMixin({ validate: false, useDefaults: true});
+const ValidatingModel = myPropTypesMixin(Model);
 ```
 
 ## License

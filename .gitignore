@@ -6,3 +6,4 @@ lib
 .publish
 dist
 min
+*.log
