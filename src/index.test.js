@@ -1,13 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { PropTypes } from 'react';
-import chai from 'chai';
-import sinonChai from 'sinon-chai';
-import sinon from 'sinon';
 
-import propTypesMixin, { getPropTypesMixin } from '../index';
-
-chai.use(sinonChai);
-const { expect } = chai;
+import propTypesMixin, { getPropTypesMixin } from './index';
 
 describe('PropTypesMixin', () => {
     let Model;
@@ -26,43 +20,43 @@ describe('PropTypesMixin', () => {
         };
 
 
-        createSpy = sinon.spy(Model, 'create');
+        createSpy = jest.spyOn(Model, 'create');
 
         ModelWithMixin = propTypesMixin(Model);
         ModelWithMixin.modelName = 'ModelWithMixin';
 
         modelInstance = new ModelWithMixin();
-        updateSpy = sinon.spy(modelInstance, 'update');
+        updateSpy = jest.spyOn(modelInstance, 'update');
     });
 
     it('getPropTypesMixin works correctly', () => {
         const mixin = getPropTypesMixin();
-        expect(mixin).to.be.a('function');
+        expect(mixin).toBeInstanceOf(Function);
 
         const result = mixin(Model);
-        expect(result).to.be.a('function');
-        expect(Object.getPrototypeOf(result)).to.equal(Model);
+        expect(result).toBeInstanceOf(Function);
+        expect(Object.getPrototypeOf(result)).toEqual(Model);
     });
 
     it('mixin correctly returns a class', () => {
-        expect(ModelWithMixin).to.be.a('function');
-        expect(Object.getPrototypeOf(ModelWithMixin)).to.equal(Model);
+        expect(ModelWithMixin).toBeInstanceOf(Function);
+        expect(Object.getPrototypeOf(ModelWithMixin)).toEqual(Model);
     });
 
     it('correctly delegates to superclass create', () => {
         const arg = {};
         ModelWithMixin.create(arg);
 
-        expect(createSpy).to.be.calledOnce;
-        expect(createSpy).to.be.calledWithExactly(arg);
+        expect(createSpy.mock.calls.length).toBe(1);
+        expect(createSpy).toBeCalledWith(arg);
     });
 
     it('correctly delegates to superclass update', () => {
         const arg = {};
         modelInstance.update(arg);
 
-        expect(updateSpy).to.be.calledOnce;
-        expect(updateSpy).to.be.calledWithExactly(arg);
+        expect(updateSpy.mock.calls.length).toBe(1);
+        expect(updateSpy).toBeCalledWith(arg);
     });
 
     it('raises validation error on create correctly', () => {
@@ -74,7 +68,7 @@ describe('PropTypesMixin', () => {
 
         const funcShouldThrow = () => ModelWithMixin.create({ notName: 'asd' });
 
-        expect(funcShouldThrow).to.throw('ModelWithMixin', 'name');
+        expect(funcShouldThrow).toThrow('ModelWithMixin', 'name');
     });
 
     it('raises validation error on update correctly', () => {
@@ -87,7 +81,7 @@ describe('PropTypesMixin', () => {
 
         const funcShouldThrow = () => instance.update({ name: 123 });
 
-        expect(funcShouldThrow).to.throw('ModelWithMixin', 'name');
+        expect(funcShouldThrow).toThrow('ModelWithMixin', 'name');
     });
 
     it('correctly uses defaultProps', () => {
@@ -103,7 +97,7 @@ describe('PropTypesMixin', () => {
         const createArg = { name: 'Tommi', age: 25 };
 
         ModelWithMixin.create(createArg);
-        expect(createSpy).to.have.been.calledOnce;
-        expect(createSpy).to.have.been.calledWithMatch({ name: 'Tommi', isFetching: false });
+        expect(createSpy.mock.calls.length).toBe(1);
+        expect(createSpy).toBeCalledWith(expect.objectContaining({ name: 'Tommi', isFetching: false }));
     });
 });
