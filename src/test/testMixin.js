@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { PropTypes } from 'react';
 import chai from 'chai';
 import sinonChai from 'sinon-chai';
@@ -18,7 +19,7 @@ describe('PropTypesMixin', () => {
     beforeEach(() => {
         Model = class {
             static create() {}
-            update() {}
+            update() {} // eslint-disable-line class-methods-use-this
             getClass() {
                 return this.constructor;
             }

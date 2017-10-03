@@ -26,7 +26,7 @@ export function getPropTypesMixin(userOpts) {
 
     let useValidation;
 
-    if (opts.hasOwnProperty('validate')) {
+    if (Object.prototype.hasOwnProperty.call(opts, 'validate')) {
         useValidation = opts.validate;
     } else if (process) {
         useValidation = process.env.NODE_ENV !== 'production';
@@ -34,7 +34,7 @@ export function getPropTypesMixin(userOpts) {
         useValidation = true;
     }
 
-    const useDefaults = opts.hasOwnProperty('useDefaults')
+    const useDefaults = Object.prototype.hasOwnProperty.call(opts, 'useDefaults')
         ? opts.useDefaults
         : true;
 
@@ -50,7 +50,7 @@ export function getPropTypesMixin(userOpts) {
             const propsWithDefaults = Object.assign({}, defaults, props);
 
             if (useValidation && hasPropTypes(this)) {
-                validateProps(propsWithDefaults, this.propTypes, this.modelName + '.create');
+                validateProps(propsWithDefaults, this.propTypes, `${this.modelName}.create`);
             }
 
             return super.create(propsWithDefaults, ...rest);
@@ -69,9 +69,9 @@ export function getPropTypesMixin(userOpts) {
                 // Run validators for only the props passed in, not
                 // all declared PropTypes.
                 forOwn(props, (val, key) => {
-                    if (propTypes.hasOwnProperty(key)) {
+                    if (Object.prototype.hasOwnProperty.call(propTypes, key)) {
                         const validator = propTypes[key];
-                        validateProp(validator, props, key, modelName + '.update');
+                        validateProp(validator, props, key, `${modelName}.update`);
                     }
                 });
             }
