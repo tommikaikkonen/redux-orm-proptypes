@@ -1,9 +1,4 @@
-function validateProp(validator, props, key, modelName) {
-    const result = validator(props, key, modelName, 'prop');
-    if (result instanceof Error) {
-        throw result;
-    }
-}
+import { PropTypes } from 'prop-types';
 
 function hasPropTypes(obj) {
     return typeof obj.propTypes === 'object';
@@ -11,12 +6,6 @@ function hasPropTypes(obj) {
 
 function hasDefaultProps(obj) {
     return typeof obj.defaultProps === 'object';
-}
-
-function validateProps(props, propTypes, modelName) {
-    Object.keys(propTypes).forEach((key) => {
-        validateProp(propTypes[key], props, key, modelName);
-    });
 }
 
 export function getPropTypesMixin(userOpts) {
@@ -48,7 +37,8 @@ export function getPropTypesMixin(userOpts) {
             const propsWithDefaults = Object.assign({}, defaults, props);
 
             if (useValidation && hasPropTypes(this)) {
-                validateProps(propsWithDefaults, this.propTypes, `${this.modelName}.create`);
+                PropTypes.checkPropTypes(this.propTypes, propsWithDefaults, 'prop',
+                                         `${this.modelName}.create`);
             }
 
             return super.create(propsWithDefaults, ...rest);
@@ -72,7 +62,8 @@ export function getPropTypesMixin(userOpts) {
                     }
                     return result;
                 }, {});
-                validateProps(props, propTypesToValidate, `${modelName}.update`);
+                PropTypes.checkPropTypes(propTypesToValidate, props, 'prop',
+                                         `${modelName}.update`);
             }
 
             return super.update(...args);

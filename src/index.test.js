@@ -1,5 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { PropTypes } from 'react';
+import { PropTypes } from 'prop-types';
 
 import propTypesMixin, { getPropTypesMixin } from './index';
 
@@ -9,6 +8,7 @@ describe('PropTypesMixin', () => {
     let modelInstance;
     let createSpy;
     let updateSpy;
+    let consoleErrorSpy;
 
     beforeEach(() => {
         Model = class {
@@ -27,6 +27,8 @@ describe('PropTypesMixin', () => {
 
         modelInstance = new ModelWithMixin();
         updateSpy = jest.spyOn(modelInstance, 'update');
+        consoleErrorSpy = jest.spyOn(global.console, 'error');
+        consoleErrorSpy.mockReset();
     });
 
     it('getPropTypesMixin works correctly', () => {
@@ -65,10 +67,11 @@ describe('PropTypesMixin', () => {
         };
 
         ModelWithMixin.create({ name: 'shouldnt raise error' });
+        expect(consoleErrorSpy.mock.calls.length).toBe(0);
 
-        const funcShouldThrow = () => ModelWithMixin.create({ notName: 'asd' });
-
-        expect(funcShouldThrow).toThrow('ModelWithMixin', 'name');
+        ModelWithMixin.create({ notName: 'asd' });
+        expect(consoleErrorSpy.mock.calls.length).toBe(1);
+        expect(consoleErrorSpy).toBeCalledWith('Warning: Failed prop type: The prop `name` is marked as required in `ModelWithMixin.create`, but its value is `undefined`.');
     });
 
     it('raises validation error on update correctly', () => {
@@ -76,12 +79,14 @@ describe('PropTypesMixin', () => {
             name: PropTypes.string.isRequired,
             age: PropTypes.number.isRequired,
         };
+        expect(consoleErrorSpy.mock.calls.length).toBe(0);
+        const instance = new ModelWithMixin({ name: 'asd', age: 123 });
+        expect(consoleErrorSpy.mock.calls.length).toBe(0);
 
-        const instance = new ModelWithMixin();
+        instance.update({ name: 123 });
 
-        const funcShouldThrow = () => instance.update({ name: 123 });
-
-        expect(funcShouldThrow).toThrow('ModelWithMixin', 'name');
+        expect(consoleErrorSpy.mock.calls.length).toBe(1);
+        expect(consoleErrorSpy).toBeCalledWith('Warning: Failed prop type: Invalid prop `name` of type `number` supplied to `ModelWithMixin.update`, expected `string`.');
     });
 
     it('correctly uses defaultProps', () => {

@@ -25,8 +25,6 @@ Use the mixin function which returns a class with PropTypes and defaultProps log
 const ValidatingModel = propTypesMixin(Model);
 ```
 
-If `process.env.NODE_ENV === 'production'`, PropTypes checking will be disabled.
-
 Define your concrete model, and add `propTypes` and `defaultProps` static class attributes.
 
 ```javascript
@@ -44,7 +42,7 @@ Person.defaultProps = {
 Person.modelName = 'Person';
 ```
 
-The mixin adds a layer of logic on top of the Model static method `create` and the instance method `update`. When calling `create`, if you have defined `defaultProps`, it'll merge the defaults with the props you passed in. Then, if you've defined `Model.propTypes`, it'll validate the props. An error will be thrown if a prop is found to be invalid. The final props (that may have been merged with defaults) will be passed to the `create` method on the superclass you passed the mixin function.
+The mixin adds a layer of logic on top of the Model static method `create` and the instance method `update`. When calling `create`, if you have defined `defaultProps`, it'll merge the defaults with the props you passed in. Then, if you've defined `Model.propTypes`, it'll validate the props. The final props (that may have been merged with defaults) will be passed to the `create` method on the superclass you passed the mixin function.
 
 When you call the `modelInstance.update(attrObj)` instance method, the keys in `attrObj` will be checked against the corresponding `propTypes`, if they exist.
 
