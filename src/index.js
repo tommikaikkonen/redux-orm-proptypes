@@ -66,12 +66,13 @@ export function getPropTypesMixin(userOpts) {
 
                 // Run validators for only the props passed in, not
                 // all declared PropTypes.
-                Object.keys(props).forEach((key) => {
+                const propTypesToValidate = Object.keys(props).reduce((result, key) => {
                     if (Object.prototype.hasOwnProperty.call(propTypes, key)) {
-                        const validator = propTypes[key];
-                        validateProp(validator, props, key, `${modelName}.update`);
+                        return { ...result, [key]: propTypes[key] };
                     }
-                });
+                    return result;
+                }, {});
+                validateProps(props, propTypesToValidate, `${modelName}.update`);
             }
 
             return super.update(...args);
