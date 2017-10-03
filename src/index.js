@@ -1,5 +1,3 @@
-import forOwn from 'lodash/forOwn';
-
 function validateProp(validator, props, key, modelName) {
     const result = validator(props, key, modelName, 'prop');
     if (result instanceof Error) {
@@ -16,8 +14,8 @@ function hasDefaultProps(obj) {
 }
 
 function validateProps(props, propTypes, modelName) {
-    forOwn(propTypes, (validator, key) => {
-        validateProp(validator, props, key, modelName);
+    Object.keys(propTypes).forEach((key) => {
+        validateProp(propTypes[key], props, key, modelName);
     });
 }
 
@@ -68,7 +66,7 @@ export function getPropTypesMixin(userOpts) {
 
                 // Run validators for only the props passed in, not
                 // all declared PropTypes.
-                forOwn(props, (val, key) => {
+                Object.keys(props).forEach((key) => {
                     if (Object.prototype.hasOwnProperty.call(propTypes, key)) {
                         const validator = propTypes[key];
                         validateProp(validator, props, key, `${modelName}.update`);
